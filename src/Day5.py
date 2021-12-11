@@ -66,6 +66,7 @@ if __name__ == '__main__':
     for v in vent_list:
         add_overlap(points, v)
     dangerPoints = [p for p in points if points[p] >= 2]
+    # Something is wrong. I get to many dangerpoints...
     print(len(dangerPoints))
 
 
