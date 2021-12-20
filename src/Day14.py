@@ -34,17 +34,22 @@ if __name__ == '__main__':
         rule = (line[0], line[2])
         rules.append(rule)
     # Step
-    for i in range(10):
-        print("Step " + str(i))
+    for i in range(20):
+        print("Step " + str(i + 1))
         polymer = step(polymer, rules)
+        c = Counter(polymer)
+        frequencies = [b for a, b in c.most_common()]
+        common = max(frequencies)
+        uncommon = min(frequencies)
+        print("Diff " + str(common - uncommon))
     # Get most frequent letter with the help from collections lib
     c = Counter(polymer)
     frequencies = [b for a, b in c.most_common()]
     common = max(frequencies)
     uncommon = min(frequencies)
 
-    #Task 1
-    print(common - uncommon)
+    
+  
  
 
     
