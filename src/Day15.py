@@ -1,3 +1,5 @@
+import math
+
 def get_neighbour(pos, playfield_size):
     neighbours = []
     pos = pos.split(',')
@@ -11,7 +13,8 @@ def get_neighbour(pos, playfield_size):
     if y < playfield_size - 1:
         neighbours.append(str(x) + ',' + str(y + 1))
     return neighbours
-
+    
+# The algoritm works but it slow af. Something is wrong
 def dijkstras(start, stop, playfield, playfield_size):
     vertices = []
     distance = {}
@@ -29,7 +32,7 @@ def dijkstras(start, stop, playfield, playfield_size):
             tup.append((v, distance[v]))
 
         ver, dis = min(tup, key=lambda x: x[1])
-
+        print(ver)
         #Return on reached stop
         if ver == stop: return dis
 
@@ -40,20 +43,42 @@ def dijkstras(start, stop, playfield, playfield_size):
                 distance.update({neighbour: alt})
                 prev.update({neighbour: ver})
 
-TODO
-def make_playfield_bigger(playfield, old_length):
-    old_keys = playfield.keys()[:]
-    for ver in playfield.keys():
+
+def make_playfield_bigger(playfield):
+    side_len = math.sqrt(len(playfield))
+    # Increase width by 5
+    for ver in list(playfield.keys()):
         pos = ver.split(',')
-        x, y = pos[0], pos[1]
+        x, y = int(pos[0]), int(pos[1])
         for increase in range(1, 5):
-            newX = x + increase
-            newY = y + increase
+            newX = x + int(side_len * increase)
+            newVal = (playfield[ver] + increase) % 9
+            if newVal == 0: newVal = 9
 
-            if newX > 9: newX = 1
-            if newY > 9: newY = 1
-            newPos
+            coord = str(newX) + ',' + str(y)
+            playfield.update({coord: newVal})
 
+    #Increase height by 5
+    for ver in list(playfield.keys()):
+        pos = ver.split(',')
+        x, y = int(pos[0]), int(pos[1])
+        for increase in range(1, 5):
+            newY = y + int(side_len * increase)
+            newVal = (playfield[ver] + increase) % 9
+            if newVal == 0: newVal = 9
+
+            coord = str(x) + ',' + str(newY)
+            playfield.update({coord: newVal})
+
+    #Used for debugging
+def plot_playfield(playfield):
+    side_len = int(math.sqrt(len(playfield)))
+    for row_index in range(side_len):
+        row = []
+        for point_index in range(side_len):
+            key = str(point_index) + ',' + str(row_index)
+            row.append(playfield[key])
+        print(row)
 
 if __name__ == "__main__":
     playfield = {} 
@@ -65,15 +90,14 @@ if __name__ == "__main__":
             pos = str(x_index) + ',' + str(row_index)
             playfield.update({pos: int(inputt[row_index][x_index])}) 
 
-    # Make playfield 5 times bigger
-    playfield_size = len(inputt)
-    make_playfield_bigger(playfield, playfield_size)
-    new_size = 5 * playfield_size
+    # Make playfield 5 times bigger. It must be a square
+    make_playfield_bigger(playfield)
+    side_len = int(math.sqrt(len(playfield)))
+    print(side_len)
 
     # Find shortest path
-    goal = str(new_size - 1) + ',' + str(new_size - 1)
-
-    shortest_path = dijkstras('0,0', goal, playfield, new_size)
+    goal = str(side_len - 1) + ',' + str(side_len - 1)
+    shortest_path = dijkstras('0,0', goal, playfield, side_len)
     print(shortest_path)
 
 
